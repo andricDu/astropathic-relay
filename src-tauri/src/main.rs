@@ -47,9 +47,9 @@ async fn run_sshuttle(
     );
     
     // For debugging - just show the command
-    Ok(format!("Would execute: {}", cmd_str))
+    //Ok(format!("Execute: {}", cmd_str));
     
-    /* Uncomment this for actual implementation:
+
     let mut command = Command::new("sshuttle");
     command.arg("-r").arg(host).arg(subnets);
     
@@ -59,15 +59,20 @@ async fn run_sshuttle(
     
     // Add port forwarding arguments
     for pf in port_forwards {
-        command.arg("-L")
-               .arg(format!("{}:{}:{}", pf.local, pf.remote, pf.remote_port));
+        command.arg("-l")
+               .arg(format!("{}:{}",pf.remote, pf.remote_port));
     }
+
+    command.arg("-v");
+
+    // Use askpass to prompt for password graphically
+    std::env::set_var("SUDO_ASKPASS", "/usr/bin/ssh-askpass");
+    command.env("SUDO_ASKPASS", "/usr/bin/ssh-askpass");
     
     match command.spawn() {
         Ok(_) => Ok("Connection established successfully".into()),
         Err(e) => Err(format!("Failed to start sshuttle: {}", e))
     }
-    */
 }
 
 fn main() {
