@@ -4,6 +4,8 @@
 
 Astropathic-Relay is a GUI application for managing secure `sshuttle` connections under the guidance of the Omnissiah. 
 
+![screenshot](./docs/app.png)
+
 ## Features
 
 - Retro design with a vintage look and feel.
