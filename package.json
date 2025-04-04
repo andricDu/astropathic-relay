@@ -1,0 +1,30 @@
+{
+  "name": "astropathic-relay",
+  "version": "1.0.0",
+  "description": "May the Omnissiah guide your connections.",
+  "main": "src/main.jsx",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "vite build && tauri build",
+    "start": "vite"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.4.1",
+    "vite": "^4.4.0"
+  },
+  "keywords": [
+    "Tauri",
+    "sshuttle",
+    "desktop",
+    "application",
+    "retro"
+  ],
+  "author": "Dusan Andric",
+  "license": "MIT"
+}

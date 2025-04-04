@@ -1,0 +1,21 @@
+[package]
+name = "sshuttle-launcher"
+version = "1.0.0"
+description = "A Tauri application to run sshuttle with a retro design"
+authors = ["You"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2.0.0", features = [] }
+
+[dependencies]
+tauri = { version = "2.0.0", features = [] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tauri-plugin-shell = "2.0.0"
+tauri-plugin-process = "2.0.0"
+
+[features]
+# By default, enable custom protocol support
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

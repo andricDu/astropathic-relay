@@ -1,0 +1,66 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.npm/
+.pnpm-store/
+.pnpm-debug.log
+
+# Build outputs
+/dist
+/dist-ssr
+/build
+
+# Rust/Cargo dependencies and build artifacts
+/target/
+src-tauri/target/
+**/*.rs.bk
+Cargo.lock
+# Keep the Cargo.lock for binary projects
+
+# Tauri specific
+.tauri/
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# Log files
+*.log
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# VS Code specific
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# IDE files
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~

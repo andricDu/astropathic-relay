@@ -1,0 +1,37 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/2.0.0-beta/tooling/cli/schema.json",
+  "productName": "SSHuttle Launcher",
+  "version": "1.0.0",
+  "identifier": "com.yourdomain.sshuttle-launcher",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "npm run start",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "title": "SSHuttle Launcher",
+        "width": 800,
+        "height": 1200,
+        "resizable": true,
+        "fullscreen": false,
+        "theme": "Dark",
+        "decorations": true,
+        "backgroundColor": "#111111"
+      }
+    ]
+  },
+  "plugins": {
+    "shell": {
+      "open": true
+    },
+    "process": {
+      "all": true
+    }
+  }
+}

@@ -1,0 +1,420 @@
+/* Define font variables for the Imperium aesthetic */
+:root {
+  --font-header: 'Cinzel', serif;
+  --font-display: 'Orbitron', sans-serif;
+  --font-terminal: 'Special Elite', cursive;
+  --font-gothic: 'Germania One', cursive;
+}
+
+html, body {
+  margin: 0;
+  padding-top: 10px;
+  background-color: #111; /* Match your retro theme */
+  height: 100%;
+  width: 100%;
+  color: #33ff00;
+}
+
+body {
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  padding: 0;
+  box-sizing
+
+/* Your existing styles below */
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(3) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Retro style classes */
+.retro-theme {
+  position: relative;
+  font-family: var(--font-terminal);
+  color: #33ff00;
+  background-color: #222;
+  border: 2px solid #33ff00;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(51, 255, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 90vh; 
+  box-sizing: border-box;
+}
+
+/* Add corner decorations */
+.retro-theme::before,
+.retro-theme::after {
+  content: "⚙";
+  position: absolute;
+  font-size: 24px;
+  color: #33ff00;
+  text-shadow: 0 0 5px #33ff00;
+}
+
+.retro-theme::before {
+  top: 5px;
+  left: 5px;
+}
+
+.retro-theme::after {
+  bottom: 5px;
+  right: 5px;
+  transform: rotate(45deg);
+}
+
+/* Add this decorative element to symbolize the Omnissiah's blessing */
+.retro-theme h1::before,
+.retro-theme h1::after {
+  content: "⚙";
+  padding: 0 10px;
+  font-size: 0.8em;
+  vertical-align: middle;
+}
+
+.form-container {
+  margin: 20px 0;
+  border: 1px solid #33ff00;
+  padding: 15px;
+}
+
+.input-group {
+  margin: 10px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  background: #111;
+  border: 1px solid #33ff00;
+  color: #33ff00;
+  padding: 8px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.button-group {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.retro-button {
+  background: #111;
+  color: #33ff00;
+  border: 1px solid #33ff00;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-family: var(--font-gothic);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9em;
+  transition: all 0.3s;
+}
+
+.retro-button:hover {
+  background: #33ff00;
+  color: #111;
+}
+
+.retro-button.primary {
+  background: #111;
+}
+
+.retro-button.secondary {
+  background: #222;
+}
+
+.status-container {
+  margin: 20px 0;
+  padding: 10px;
+  border: 1px solid #33ff00;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.status-indicator.offline .status-dot {
+  background: #ff3300;
+  box-shadow: 0 0 5px #ff3300;
+}
+
+.status-indicator.online .status-dot {
+  background: #33ff00;
+  box-shadow: 0 0 5px #33ff00;
+}
+
+.status-indicator .status-text {
+  font-family: var(--font-display);
+  font-size: 0.95em;
+  letter-spacing: 1px;
+}
+
+.console-output {
+  background: #111;
+  border: 1px solid #33ff00;
+  padding: 10px;
+  margin: 20px 0;
+  text-align: left;
+  flex: 1; /* This makes it take all remaining space */
+  min-height: 50px; /* Minimum height */
+  overflow-y: auto;
+  /* Add scroll behavior for smoother scrolling */
+  scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make pre take full height for scrolling content */
+.console-output pre {
+  margin: 0;
+  color: #33ff00;
+  font-family: var(--font-terminal);
+  /* Make text slightly smaller */
+  font-size: 0.55em;
+  /* Improve line height for better readability */
+  line-height: 1.4;
+  flex: 1;
+}
+
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  text-align: left;
+}
+
+.checkbox-group input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #111;
+  border: 1px solid #33ff00;
+  margin-right: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"]:checked::before {
+  content: "✓";
+  position: absolute;
+  color: #33ff00;
+  font-size: 16px;
+  top: -2px;
+  left: 4px;
+}
+
+.checkbox-group label {
+  color: #33ff00;
+  cursor: pointer;
+}
+
+/* Glowing effect for connected state */
+.retro-theme.connected {
+  animation: retro-glow 1.5s infinite alternate;
+  border-color: #5fff5f;
+}
+
+@keyframes retro-glow {
+  0% {
+    box-shadow: 0 0 5px #33ff00, 0 0 10px #33ff00;
+    text-shadow: 0 0 2px #33ff00;
+  }
+  
+  50% {
+    box-shadow: 0 0 10px #33ff00, 0 0 20px #33ff00, 0 0 30px #33ff00;
+    text-shadow: 0 0 3px #33ff00;
+  }
+  
+  100% {
+    box-shadow: 0 0 7px #33ff00, 0 0 15px #33ff00;
+    text-shadow: 0 0 2px #33ff00;
+  }
+}
+
+/* Make the status indicator pulse more dramatically when connected */
+.status-indicator.online .status-dot {
+  animation: pulse-dot 1.5s infinite alternate;
+}
+
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 5px #33ff00;
+  }
+  100% {
+    box-shadow: 0 0 10px #33ff00, 0 0 20px #33ff00;
+  }
+}
+
+/* Console output glows when connected */
+.connected .console-output {
+  border-color: #5fff5f;
+  box-shadow: inset 0 0 8px #33ff00;
+}
+
+
+.port-forward-section {
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid #33ff00;
+  background-color: #181818;
+}
+
+.port-forward-section h3 {
+  font-family: var(--font-gothic);
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+  text-align: left;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.port-forward-inputs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.port-forward-inputs input {
+  flex: 1;
+  background: #111;
+  border: 1px solid #33ff00;
+  color: #33ff00;
+  padding: 5px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8em;
+}
+
+.port-forward-list {
+  text-align: left;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.port-forward-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+  border-bottom: 1px dotted #2a2;
+}
+
+.port-forward-item:last-child {
+  border-bottom: none;
+}
+
+.retro-button.add-port,
+.retro-button.remove-port {
+  padding: 2px 8px;
+  min-width: 25px;
+  font-size: 0.8em;
+}
+
+.retro-button.remove-port {
+  background-color: #330000;
+  border-color: #ff3300;
+  color: #ff3300;
+}
+
+.retro-button.remove-port:hover {
+  background-color: #ff3300;
+  color: #111;
+}
+
+/* Adjust title to use Cinzel for that imperial gothic feel */
+h1 {
+  font-family: var(--font-gothic);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 2.2em;
+  text-shadow: 0 0 5px #33ff00, 0 0 10px rgba(51, 255, 0, 0.5);
+  margin-bottom: 30px;
+}
+
+/* Form labels in mechanical font */
+label {
+  font-family: var(--font-display);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+
+/* Input fields with tech font */
+input {
+  font-family: var(--font-display) !important;
+  letter-spacing: 1px;
+}
+
+/* Add a small Aquila-like separator */
+.form-container::after {
+  content: "][";
+  display: block;
+  text-align: center;
+  font-family: var(--font-gothic);
+  font-size: 1.5em;
+  margin: 10px 0;
+  color: #33ff00;
+  text-shadow: 0 0 5px #33ff00;
+}
