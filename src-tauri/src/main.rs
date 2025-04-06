@@ -2,13 +2,14 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::sync::Mutex;
-use std::process::Command;
+use std::process::{Command, Child};
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::PathBuf;
 use std::collections::HashMap;
 use dirs;
+use tauri::State;
 
 // Define the structure for port forwards
 #[derive(Serialize, Deserialize, Clone)]
@@ -18,7 +19,7 @@ struct ListenPortForward {
     remote_port: String,
 }
 
-struct ProcessState(Mutex<Option<std::process::Child>>);
+struct ProcessState(Mutex<Option<Child>>);
 
 // Simple command to test functionality
 #[tauri::command]
@@ -26,9 +27,10 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
-// Command to run sshuttle
+// Command to run sshuttle - store the process handle
 #[tauri::command]
 async fn run_sshuttle(
+    state: State<'_, ProcessState>,  // Add this parameter to access state
     host: String, 
     subnets: String, 
     dns: bool,
@@ -55,8 +57,54 @@ async fn run_sshuttle(
     command.env("SUDO_ASKPASS", "/usr/bin/ssh-askpass");
     
     match command.spawn() {
-        Ok(_) => Ok("Connection established successfully".into()),
+        Ok(child) => {
+            // Store child process in state
+            let mut state_guard = state.0.lock().unwrap();
+            *state_guard = Some(child);
+            Ok("Connection established successfully".into())
+        },
         Err(e) => Err(format!("Failed to start sshuttle: {}", e))
+    }
+}
+
+// New command to terminate the sshuttle process
+#[tauri::command]
+fn stop_sshuttle(state: State<'_, ProcessState>) -> Result<String, String> {
+    let mut state_guard = state.0.lock().unwrap();
+    
+    if let Some(mut child) = state_guard.take() {
+        // Attempt to kill the process
+        match child.kill() {
+            Ok(_) => {
+                // Try to wait for the process to exit
+                match child.wait() {
+                    Ok(_) => {
+                        // Try to kill any remaining sshuttle processes 
+                        // (needed if running with sudo)
+                        let _ = Command::new("pkill")
+                            .args(["-f", "sshuttle"])
+                            .status();
+                        
+                        Ok("Connection terminated successfully".into())
+                    },
+                    Err(e) => Err(format!("Error waiting for process to exit: {}", e))
+                }
+            },
+            Err(e) => {
+                // If direct kill failed, try pkill
+                let kill_result = Command::new("pkill")
+                    .args(["-f", "sshuttle"])
+                    .status();
+                
+                if kill_result.is_ok() {
+                    Ok("Connection forcefully terminated".into())
+                } else {
+                    Err(format!("Failed to kill sshuttle process: {}", e))
+                }
+            }
+        }
+    } else {
+        Ok("No active connection to terminate".into())
     }
 }
 
@@ -155,12 +203,13 @@ fn delete_connection(name: String) -> Result<(), String> {
 // Update main function to register the new commands
 fn main() {
     tauri::Builder::default()
-        .manage(ProcessState(Mutex::new(None)))
+        .manage(ProcessState(Mutex::new(None)))  // Add this line
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_process::init())
         .invoke_handler(tauri::generate_handler![
             greet, 
             run_sshuttle, 
+            stop_sshuttle,  // Add this new command
             load_connections, 
             save_connection, 
             delete_connection

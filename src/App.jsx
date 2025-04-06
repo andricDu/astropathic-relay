@@ -158,12 +158,24 @@ function App() {
     }
   }
 
-  function disconnect() {
+  async function disconnect() {
     setOutput(">> Severing connection to the noosphere...");
-    setStatus("disconnected");
-    setTimeout(() => {
-      setOutput(">> Connection terminated. The Omnissiah awaits your return.");
-    }, 500);
+    
+    try {
+      const result = await invoke("stop_sshuttle");
+      setOutput(prev => prev + "\n" + result + 
+        "\n>> Connection terminated. The machine spirit returns to dormancy." +
+        "\n>> The Omnissiah awaits your return.");
+      setStatus("disconnected");
+    } catch (error) {
+      setOutput(prev => prev + 
+        "\n>> Error in termination ritual: " + error + 
+        "\n>> Attempting emergency shutdown procedures...");
+        
+      // Short timeout before updating status even if there was an error
+      // This gives the user feedback even if the backend had issues
+      setTimeout(() => setStatus("disconnected"), 1500);
+    }
   }
 
   // Determine if the retro theme should have the connected class for the glow effect
