@@ -637,3 +637,34 @@ input {
     min-height: 300px;
   }
 }
+
+/* Blinking cursor effect for the terminal */
+.typewriter-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1em;
+  background-color: #33ff00;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes blink {
+  from, to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Make sure the console output has a minimum height even when empty */
+.console-output pre {
+  position: relative;
+  min-height: 20px;
+}
+
+/* Force pre to preserve whitespace and line breaks */
+.console-output pre {
+  white-space: pre-wrap;
+}

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
+import TypeWriter from "./components/TypeWriter";  // Import the new component
 
 function App() {
   const [host, setHost] = useState("");
@@ -92,16 +93,6 @@ function App() {
   const omnissiahPraise = `
   ⚙️ INITIATING CONNECTION RITUAL ⚙️
 
-       _____/\\\\\\\\\\\\\\\\\\\\\\___        
-        ___/\\\\\\/////////\\\\\\___       
-         __\\//\\\\\\______\\///____      
-          ___\\////\\\\\\___________     
-           ______\\////\\\\\\________    
-            _________\\////\\\\\\_____ 
-             __/\\\\\\______\\//\\\\\\__  
-              _\\///\\\\\\\\\\\\\\\\\\\\\\/___
-               ___\\///////////_____
-  
   >> Praise be to the Omnissiah!
   >> Appeasing the machine spirit...
   >> Ritual incense applied to network interface
@@ -124,12 +115,13 @@ function App() {
 
   async function connect() {
     try {
-      // First display the Omnissiah praise and ASCII art
+      // First display the Omnissiah praise and ASCII art - slower for dramatic effect
       setOutput(omnissiahPraise);
       
-      // Wait for dramatic effect before continuing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Wait for the typing to finish (approximate time based on character count)
+      await new Promise(resolve => setTimeout(resolve, omnissiahPraise.length * 15));
       
+      // Continue with faster typing for connection messages
       setOutput(prev => prev + "\n\n>> Invoking sshuttle protocols...");
       setOutput(prev => prev + "\n>> Requesting machine spirit privileges from the Omnissiah...");
       
@@ -196,7 +188,10 @@ function App() {
         <div className="console-column">
           <h3>Cogitator Interface</h3>
           <div className="console-output" ref={consoleRef}>
-            <pre>{output}</pre>
+            {/* Replace the static pre with TypeWriter */}
+            <pre>
+              <TypeWriter text={output} speed={5} />
+            </pre>
           </div>
         </div>
         
