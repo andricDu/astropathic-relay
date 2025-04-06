@@ -178,16 +178,18 @@ fn stop_sshuttle(state: State<'_, ProcessState>) -> Result<String, String> {
 
 #[tauri::command]
 async fn check_sshuttle_running() -> Result<bool, String> {
+    // Use more specific criteria to find only real sshuttle processes
     let output = Command::new("pgrep")
         .arg("-f")
-        .arg("sshuttle")
+        .arg("^sshuttle ")  // ^ ensures it starts with sshuttle
         .output()
         .map_err(|e| e.to_string())?;
     
-    // Get process output as string, removing whitespace
+    // Check if output actually contains PIDs
     let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
     
-    // Return true if we found PIDs (successful status and non-empty output)
+    // Only return true for success with non-empty PID list
+    // Exit code 0 means match found, exit code 1 means no match (expected when nothing is running)
     Ok(output.status.success() && !stdout.is_empty())
 }
 

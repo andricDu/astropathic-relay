@@ -143,10 +143,38 @@ function App() {
     }
   }, [status]);
 
-  // Check status on app load
+  // Check status on app load (only once)
   useEffect(() => {
-    checkSshuttleStatus();
-  }, []);
+    let initialCheck = true;
+    
+    async function check() {
+      try {
+        const isRunning = await invoke("check_sshuttle_running");
+        console.log(isRunning ? "sshuttle is running" : "sshuttle is not running");
+        
+        if (isRunning) {
+          // sshuttle is running
+          setStatus("connected");
+          if (initialCheck) {
+            setOutput("Ready to connect...\n>> Detected active sshuttle connection.");
+            initialCheck = false;
+          } else {
+            setOutput(prev => prev + "\n>> Detected active sshuttle connection.");
+          }
+        } else {
+          // sshuttle is not running
+          setStatus("disconnected");
+          if (status === "connected") {
+            setOutput(prev => prev + "\n>> Connection to the noosphere has been terminated.");
+          }
+        }
+      } catch (error) {
+        console.error("Error checking sshuttle status:", error);
+      }
+    }
+    
+    check();
+  }, []);  // Empty dependency array ensures it only runs once on mount
   
   // Function to check if sshuttle is running
   async function checkSshuttleStatus() {
