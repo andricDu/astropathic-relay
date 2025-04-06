@@ -185,129 +185,138 @@ function App() {
     <main className={retroThemeClass}>
       <h1>Astropathic Relay</h1>
       
-      {/* Saved Connections Section */}
-      <div className="saved-connections-section">
-        <h3>Data Archives</h3>
-        <div className="saved-connections-controls">
-          <select 
-            value={selectedConnection}
-            onChange={(e) => loadConnection(e.target.value)}
-            className="connection-select"
-          >
-            <option value="">-- Select Profile --</option>
-            {Object.keys(savedConnections).map(name => (
-              <option key={name} value={name}>{name}</option>
-            ))}
-          </select>
-          <button 
-            className="retro-button save-btn"
-            onClick={() => setShowSaveModal(true)}
-          >
-            Save
-          </button>
-          {selectedConnection && (
-            <button 
-              className="retro-button delete-btn"
-              onClick={() => deleteConnection(selectedConnection)}
-            >
-              Purge
-            </button>
-          )}
-        </div>
-      </div>
-      
-      <div className="form-container">
-        <div className="input-group">
-          <label>Remote Host:</label>
-          <input 
-            type="text" 
-            placeholder="user@remote-server.com"
-            value={host}
-            onChange={(e) => setHost(e.target.value)}
-          />
+      <div className="two-column-layout">
+        {/* Console Output - Left Column */}
+        <div className="console-column">
+          <h3>Cogitator Interface</h3>
+          <div className="console-output" ref={consoleRef}>
+            <pre>{output}</pre>
+          </div>
         </div>
         
-        <div className="input-group">
-          <label>Subnets:</label>
-          <input 
-            type="text" 
-            placeholder="10.0.0.0/8,192.168.0.0/16"
-            value={subnets}
-            onChange={(e) => setSubnets(e.target.value)}
-          />
-        </div>
-        
-        <div className="checkbox-group">
-          <input
-            id="dns-checkbox"
-            type="checkbox"
-            checked={enableDns}
-            onChange={(e) => setEnableDns(e.target.checked)}
-          />
-          <label htmlFor="dns-checkbox">Enable DNS forwarding</label>
-        </div>
-        
-        {/* Port Forwarding Section */}
-        <div className="port-forward-section">
-          <h3>Port Forwards</h3>
-          <div className="port-forward-form">
-            <div className="port-forward-inputs">
-              <input 
-                type="text"
-                placeholder="Remote host"
-                value={newPortForward.remote}
-                onChange={(e) => setNewPortForward({...newPortForward, remote: e.target.value})}
-              />
-              <input 
-                type="text"
-                placeholder="Remote port"
-                value={newPortForward.remotePort}
-                onChange={(e) => setNewPortForward({...newPortForward, remotePort: e.target.value})}
-              />
-              <button className="retro-button add-port" onClick={addPortForward}>+</button>
+        {/* Right Column - Controls */}
+        <div className="controls-column">
+          {/* Saved Connections Section */}
+          <div className="saved-connections-section">
+            <h3>Data Archives</h3>
+            <div className="saved-connections-controls">
+              <select 
+                value={selectedConnection}
+                onChange={(e) => loadConnection(e.target.value)}
+                className="connection-select"
+              >
+                <option value="">-- Select Profile --</option>
+                {Object.keys(savedConnections).map(name => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </select>
+              <button 
+                className="retro-button save-btn"
+                onClick={() => setShowSaveModal(true)}
+              >
+                Save
+              </button>
+              {selectedConnection && (
+                <button 
+                  className="retro-button delete-btn"
+                  onClick={() => deleteConnection(selectedConnection)}
+                >
+                  Purge
+                </button>
+              )}
             </div>
           </div>
           
-          {/* List of port forwards */}
-          <div className="port-forward-list">
-            {portForwards.map((pf, index) => (
-              <div key={index} className="port-forward-item">
-                <span>{pf.remote}:{pf.remotePort}</span>
-                <button className="retro-button remove-port" onClick={() => removePortForward(index)}>✕</button>
+          <div className="form-container">
+            <div className="input-group">
+              <label>Remote Host:</label>
+              <input 
+                type="text" 
+                placeholder="user@remote-server.com"
+                value={host}
+                onChange={(e) => setHost(e.target.value)}
+              />
+            </div>
+            
+            <div className="input-group">
+              <label>Subnets:</label>
+              <input 
+                type="text" 
+                placeholder="10.0.0.0/8,192.168.0.0/16"
+                value={subnets}
+                onChange={(e) => setSubnets(e.target.value)}
+              />
+            </div>
+            
+            <div className="checkbox-group">
+              <input
+                id="dns-checkbox"
+                type="checkbox"
+                checked={enableDns}
+                onChange={(e) => setEnableDns(e.target.checked)}
+              />
+              <label htmlFor="dns-checkbox">Enable DNS forwarding</label>
+            </div>
+            
+            {/* Port Forwarding Section */}
+            <div className="port-forward-section">
+              <h3>Port Forwards</h3>
+              <div className="port-forward-form">
+                <div className="port-forward-inputs">
+                  <input 
+                    type="text"
+                    placeholder="Remote host"
+                    value={newPortForward.remote}
+                    onChange={(e) => setNewPortForward({...newPortForward, remote: e.target.value})}
+                  />
+                  <input 
+                    type="text"
+                    placeholder="Remote port"
+                    value={newPortForward.remotePort}
+                    onChange={(e) => setNewPortForward({...newPortForward, remotePort: e.target.value})}
+                  />
+                  <button className="retro-button add-port" onClick={addPortForward}>+</button>
+                </div>
               </div>
-            ))}
+              
+              {/* List of port forwards */}
+              <div className="port-forward-list">
+                {portForwards.map((pf, index) => (
+                  <div key={index} className="port-forward-item">
+                    <span>{pf.remote}:{pf.remotePort}</span>
+                    <button className="retro-button remove-port" onClick={() => removePortForward(index)}>✕</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="button-group">
+              <button 
+                className="retro-button primary" 
+                onClick={connect}
+                disabled={status === "connected"}
+              >
+                Connect
+              </button>
+              <button 
+                className="retro-button secondary"
+                onClick={disconnect}
+                disabled={status === "disconnected"}
+              >
+                Disconnect
+              </button>
+            </div>
+          </div>
+          
+          <div className="status-container">
+            <div className={`status-indicator ${status === "connected" ? "online" : "offline"}`}>
+              <span className="status-dot"></span>
+              <span className="status-text">
+                {status === "connected" ? "Connected" : "Disconnected"}
+              </span>
+            </div>
           </div>
         </div>
-        
-        <div className="button-group">
-          <button 
-            className="retro-button primary" 
-            onClick={connect}
-            disabled={status === "connected"}
-          >
-            Connect
-          </button>
-          <button 
-            className="retro-button secondary"
-            onClick={disconnect}
-            disabled={status === "disconnected"}
-          >
-            Disconnect
-          </button>
-        </div>
-      </div>
-      
-      <div className="status-container">
-        <div className={`status-indicator ${status === "connected" ? "online" : "offline"}`}>
-          <span className="status-dot"></span>
-          <span className="status-text">
-            {status === "connected" ? "Connected" : "Disconnected"}
-          </span>
-        </div>
-      </div>
-      
-      <div className="console-output" ref={consoleRef}>
-        <pre>{output}</pre>
       </div>
       
       {/* Save Connection Modal */}

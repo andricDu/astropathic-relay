@@ -1,9 +1,9 @@
 [package]
-name = "sshuttle-launcher"
+name = "astropathic-relay"
 version = "1.0.0"
-description = "A Tauri application to run sshuttle with a retro design"
-authors = ["You"]
-edition = "2021"
+description = "Praise the Omnissiah! A Tauri application for the Astropathic Relay."
+authors = ["Dusan Andric"]
+edition = "2024"
 
 [build-dependencies]
 tauri-build = { version = "2.0.0", features = [] }

@@ -24,17 +24,25 @@ body {
 
 #root {
   width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* #root {
+  width: 100%;
   display: flex;
   padding: 0;
   box-sizing
 
-/* Your existing styles below */
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-}
+} */
 
 .logo {
   height: 6em;
@@ -85,6 +93,7 @@ body {
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
+  min-height: 600px;
 }
 
 /* Add corner decorations */
@@ -214,13 +223,16 @@ body {
   padding: 10px;
   margin: 20px 0;
   text-align: left;
-  flex: 1; /* This makes it take all remaining space */
+  flex: 1.5; /* This makes it take all remaining space */
   min-height: 250px; /* Minimum height */
   overflow-y: auto;
   /* Add scroll behavior for smoother scrolling */
   scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
+  height: auto;
+  min-height: 500px;
+  margin: 0; /* Remove margins since it's in its own column */
 }
 
 /* Make pre take full height for scrolling content */
@@ -232,7 +244,7 @@ body {
   font-size: 0.55em;
   /* Improve line height for better readability */
   line-height: 1.4;
-  flex: 1;
+  flex: 1.5;
 }
 
 
@@ -389,7 +401,7 @@ h1 {
   letter-spacing: 1px;
   font-size: 2.2em;
   text-shadow: 0 0 5px #33ff00, 0 0 10px rgba(51, 255, 0, 0.5);
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 /* Form labels in mechanical font */
@@ -569,4 +581,59 @@ input {
 .retro-button.cancel-btn {
   background-color: #222;
 }
+
+/* Configure the two-column layout */
+.two-column-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Style the left console column */
+.console-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+  width: 40%;
+}
+
+.console-column h3 {
+  font-family: var(--font-gothic);
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 1.1em;
+  text-align: left;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background-color: #181818;
+  border: 1px solid #33ff00;
+  color: #33ff00;
+}
+
+/* Style the right controls column */
+.controls-column {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+}
+
+/* Responsive behavior for smaller screens */
+@media (max-width: 768px) {
+  .two-column-layout {
+    flex-direction: column;
+  }
+  
+  .console-column,
+  .controls-column {
+    width: 100%;
+  }
+  
+  .console-output {
+    min-height: 300px;
+  }
 }

@@ -27,10 +27,9 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
-// Command to run sshuttle - store the process handle
 #[tauri::command]
 async fn run_sshuttle(
-    state: State<'_, ProcessState>,  // Add this parameter to access state
+    state: State<'_, ProcessState>, 
     host: String, 
     subnets: String, 
     dns: bool,
@@ -52,8 +51,10 @@ async fn run_sshuttle(
 
     command.arg("-v");
 
-    // Use askpass to prompt for password graphically
-    std::env::set_var("SUDO_ASKPASS", "/usr/bin/ssh-askpass");
+    // Unsafe block around the environment variable manipulation
+    unsafe {
+        std::env::set_var("SUDO_ASKPASS", "/usr/bin/ssh-askpass");
+    }
     command.env("SUDO_ASKPASS", "/usr/bin/ssh-askpass");
     
     match command.spawn() {
@@ -67,7 +68,6 @@ async fn run_sshuttle(
     }
 }
 
-// New command to terminate the sshuttle process
 #[tauri::command]
 fn stop_sshuttle(state: State<'_, ProcessState>) -> Result<String, String> {
     let mut state_guard = state.0.lock().unwrap();
@@ -200,7 +200,6 @@ fn delete_connection(name: String) -> Result<(), String> {
     Ok(())
 }
 
-// Update main function to register the new commands
 fn main() {
     tauri::Builder::default()
         .manage(ProcessState(Mutex::new(None)))  // Add this line
@@ -209,7 +208,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             greet, 
             run_sshuttle, 
-            stop_sshuttle,  // Add this new command
+            stop_sshuttle, 
             load_connections, 
             save_connection, 
             delete_connection
