@@ -1,4 +1,4 @@
-# SSHuttle Launcher
+# Astropathic-Relay
 
 ## Overview
 
@@ -17,8 +17,8 @@ Astropathic-Relay is a GUI application for managing secure `sshuttle` connection
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/sshuttle-launcher.git
-   cd sshuttle-launcher
+   git clone https://github.com/yourusername/Astropathic-Relay.git
+   cd astropathic-relay
    ```
 
 2. Install the dependencies:

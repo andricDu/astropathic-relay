@@ -247,6 +247,30 @@ body {
   flex: 1.5;
 }
 
+/* Add these CSS rules to differentiate output types */
+
+/* For sshuttle info messages */
+pre .info-line {
+  color: #33ff00;
+}
+
+/* For error messages */
+pre .error-line {
+  color: #ff3300;
+  text-shadow: 0 0 3px #ff3300;
+}
+
+/* For warning messages */
+pre .warning-line {
+  color: #ffcc00;
+  text-shadow: 0 0 3px #ffcc00;
+}
+
+/* For ritual connections */
+pre .ritual-text {
+  color: #5f8aff;
+  text-shadow: 0 0 3px #5f8aff;
+}
 
 .checkbox-group {
   display: flex;
@@ -667,4 +691,27 @@ input {
 /* Force pre to preserve whitespace and line breaks */
 .console-output pre {
   white-space: pre-wrap;
+}
+
+/* Add styles for the new buttons */
+.retro-button.status-check {
+  background-color: #1a1a2e;
+  border-color: #5f8aff;
+  color: #5f8aff;
+}
+
+.retro-button.status-check:hover {
+  background-color: #5f8aff;
+  color: #1a1a2e;
+}
+
+.retro-button.info {
+  background-color: #1a1a2e;
+  border-color: #ffcc00;
+  color: #ffcc00;
+}
+
+.retro-button.info:hover {
+  background-color: #ffcc00;
+  color: #1a1a2e;
 }

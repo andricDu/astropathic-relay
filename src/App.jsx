@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
+// Removed the listen import since we're not using events anymore
 import "./App.css";
 import TypeWriter from "./components/TypeWriter";  // Import the new component
 
@@ -113,16 +114,81 @@ function App() {
     setPortForwards(updatedPortForwards);
   };
 
+  // Remove the event listener useEffect completely
+  
+  // Enhanced polling mechanism (runs both when connected and after connection attempts)
+  useEffect(() => {
+    // Start polling immediately after connecting to capture initial output
+    const shouldPoll = status === "connected" || status === "connecting";
+    
+    if (shouldPoll) {
+      // Set up polling interval
+      const interval = setInterval(async () => {
+        try {
+          const newOutput = await invoke("get_sshuttle_output");
+          if (newOutput && newOutput.length > 0) {
+            setOutput(prev => {
+              return prev + "\n" + newOutput.map(line => {
+                const linePrefix = line.includes("ERROR:") ? ">> [ERR] " : ">> ";
+                return linePrefix + line;
+              }).join("\n");
+            });
+          }
+        } catch (error) {
+          console.error("Error polling output:", error);
+        }
+      }, 300); // Poll more frequently (300ms) for more responsive updates
+      
+      return () => clearInterval(interval);
+    }
+  }, [status]);
+
+  // Check status on app load
+  useEffect(() => {
+    checkSshuttleStatus();
+  }, []);
+  
+  // Function to check if sshuttle is running
+  async function checkSshuttleStatus() {
+    try {
+      const isRunning = await invoke("check_sshuttle_running");
+      console.log(isRunning ? "sshuttle is running" : "sshuttle is not running");
+      if (isRunning) {
+        // sshuttle is running
+        if (status !== "connected") {
+          setStatus("connected");
+          setOutput(prev => prev + "\n>> Detected active sshuttle connection.");
+        }
+      } else {
+        // sshuttle is not running
+        if (status === "connected") {
+          setStatus("disconnected");
+          setOutput(prev => prev + "\n>> Connection to the noosphere has been terminated.");
+        }
+      }
+    } catch (error) {
+      // Handle actual errors (not just "not running" status)
+      console.error("Error checking sshuttle status:", error);
+      setOutput(prev => prev + "\n>> Error querying machine spirit: " + error);
+      
+      // Assume disconnected on error
+      if (status === "connected") {
+        setStatus("disconnected");
+      }
+    }
+  }
+
+  // Update connect function to set an intermediate state
   async function connect() {
     try {
-      // First display the Omnissiah praise and ASCII art - slower for dramatic effect
+      // First display the Omnissiah praise and ASCII art
       setOutput(omnissiahPraise);
       
-      // Wait for the typing to finish (approximate time based on character count)
+      // Wait for the typing to finish
       await new Promise(resolve => setTimeout(resolve, omnissiahPraise.length * 15));
       
-      // Continue with faster typing for connection messages
       setOutput(prev => prev + "\n\n>> Invoking sshuttle protocols...");
+      setStatus("connecting"); // Add this intermediate state to start polling
       setOutput(prev => prev + "\n>> Requesting machine spirit privileges from the Omnissiah...");
       
       // Format port forwards for display
@@ -145,6 +211,14 @@ function App() {
       
       setOutput(prev => prev + "\n\n" + result + "\n\n>> The Omnissiah is pleased with your connection!");
       setStatus("connected");
+      
+      setOutput(prev => prev + "\n\n>> Receiving data stream from the noosphere...");
+      
+      // After connection attempt, verify it's actually running
+      setTimeout(async () => {
+        await checkSshuttleStatus();
+      }, 2000);
+      
     } catch (error) {
       // Special handling for permission errors
       if (error.toString().includes("elevated privileges")) {
@@ -165,6 +239,12 @@ function App() {
         "\n>> Connection terminated. The machine spirit returns to dormancy." +
         "\n>> The Omnissiah awaits your return.");
       setStatus("disconnected");
+      
+      // After disconnect attempt, verify it's actually stopped
+      setTimeout(async () => {
+        await checkSshuttleStatus();
+      }, 2000); // Give it 2 seconds to terminate
+      
     } catch (error) {
       setOutput(prev => prev + 
         "\n>> Error in termination ritual: " + error + 
@@ -173,6 +253,35 @@ function App() {
       // Short timeout before updating status even if there was an error
       // This gives the user feedback even if the backend had issues
       setTimeout(() => setStatus("disconnected"), 1500);
+    }
+  }
+
+  // Add this function to get detailed status info
+  async function getDetailedStatus() {
+    try {
+      const shuttleRunning = await invoke("check_sshuttle_running")
+        .then(() => true)
+        .catch(() => false);
+      
+      // Get process details if running
+      let processInfo = "No active process";
+      if (shuttleRunning) {
+        // You could add a new Rust function to get process details
+        // For now we'll just use a basic message
+        processInfo = "Process detected in system memory";
+      }
+      
+      setOutput(prev => prev + `\n
+>> Status Report:
+>> ------------------------------------------------
+>> Sshuttle Running: ${shuttleRunning ? "YES ✓" : "NO ✗"}
+>> Process Info: ${processInfo}
+>> UI Status: ${status}
+>> ------------------------------------------------
+>> Status check completed by order of the Omnissiah.
+      `);
+    } catch (error) {
+      setOutput(prev => prev + `\n>> Error checking status: ${error}`);
     }
   }
 
@@ -190,7 +299,7 @@ function App() {
           <div className="console-output" ref={consoleRef}>
             {/* Replace the static pre with TypeWriter */}
             <pre>
-              <TypeWriter text={output} speed={5} />
+              <TypeWriter text={output} speed={3} />
             </pre>
           </div>
         </div>
@@ -305,6 +414,21 @@ function App() {
                 disabled={status === "disconnected"}
               >
                 Disconnect
+              </button>
+              <button 
+                className="retro-button status-check"
+                onClick={async () => {
+                  setOutput(prev => prev + "\n>> Querying machine spirit status...");
+                  await checkSshuttleStatus();
+                }}
+              >
+                Check Status
+              </button>
+              <button 
+                className="retro-button info"
+                onClick={getDetailedStatus}
+              >
+                Diagnostic
               </button>
             </div>
           </div>

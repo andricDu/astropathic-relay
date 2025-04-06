@@ -20,3 +20,10 @@ dirs = "5.0.1"  # Library for finding system directories
 # By default, enable custom protocol support
 default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
+
+[profile.dev]
+opt-level = 0
+debug = 1  # Reduced debug info
+
+[profile.dev.package."*"]
+opt-level = 0

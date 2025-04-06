@@ -17,12 +17,14 @@
     "beforeBuildCommand": "yarn run vite build"
   },
   "app": {
+    "withGlobalTauri": true,
     "security": {
       "csp": null
     },
     "windows": [
       {
         "title": "Astropathic Relay",
+        "label": "main",
         "width": 1400,
         "height": 900,
         "resizable": true,

@@ -1,0 +1,22 @@
+{
+    "identifier": "main-capability",
+    "description": "Capability for the main window",
+    "windows": [
+        "main", "Astropathic Relay", "*"
+    ],
+    "permissions": [
+        "core:path:default",
+        "core:event:default",
+        "core:event:default",
+        "core:event:allow-emit",
+        "core:event:allow-emit-to",
+        "core:event:allow-listen",
+        "core:event:allow-unlisten",
+        "core:window:default",
+        "core:app:default",
+        "core:resources:default",
+        "core:menu:default",
+        "core:tray:default",
+        "core:window:allow-set-title"
+    ]
+}
