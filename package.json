@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tauri dev",
     "build": "vite build && tauri build",
+    "build:release": "vite build --mode production && cargo tauri build --release",
     "start": "vite"
   },
   "dependencies": {

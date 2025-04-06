@@ -127,10 +127,11 @@ function App() {
       // First display the Omnissiah praise and ASCII art
       setOutput(omnissiahPraise);
       
-      // Wait 2 seconds for dramatic effect before continuing with connection
+      // Wait for dramatic effect before continuing
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       setOutput(prev => prev + "\n\n>> Invoking sshuttle protocols...");
+      setOutput(prev => prev + "\n>> Requesting machine spirit privileges from the Omnissiah...");
       
       // Format port forwards for display
       const portForwardStr = portForwards.length > 0 
@@ -153,8 +154,13 @@ function App() {
       setOutput(prev => prev + "\n\n" + result + "\n\n>> The Omnissiah is pleased with your connection!");
       setStatus("connected");
     } catch (error) {
-      setOutput(`Error: ${error}\n\n>> The machine spirit is displeased. Retry the sacred ritual.`);
-      setStatus("disconnected");
+      // Special handling for permission errors
+      if (error.toString().includes("elevated privileges")) {
+        setOutput(prev => prev + `\n\n>> ERROR: ${error}\n\n>> The machine spirit requires higher clearance level.\n>> Please grant the requested privileges to continue.`);
+      } else {
+        setOutput(prev => `Error: ${error}\n\n>> The machine spirit is displeased. Retry the sacred ritual.`);
+        setStatus("disconnected");
+      }
     }
   }
 

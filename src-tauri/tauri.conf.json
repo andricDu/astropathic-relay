@@ -2,7 +2,14 @@
   "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/2.0.0-beta/tooling/cli/schema.json",
   "productName": "Astropathic Relay",
   "version": "1.0.0",
-  "identifier": "com.yourdomain.sshuttle-launcher",
+  "identifier": "ca.andricdu.astropathic-relay",
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/icon.png"
+    ]
+  },
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:1420",

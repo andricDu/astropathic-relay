@@ -35,36 +35,75 @@ async fn run_sshuttle(
     dns: bool,
     port_forwards: Vec<ListenPortForward>
 ) -> Result<String, String> {
-
-    let mut command = Command::new("sshuttle");
-    command.arg("-r").arg(host).arg(subnets);
+    // Build the sshuttle command string using String values consistently
+    let mut sshuttle_args = vec!["-r".to_string(), host.clone(), subnets.clone()];
     
     if dns {
-        command.arg("--dns");
+        sshuttle_args.push("--dns".to_string());
     }
     
     // Add port forwarding arguments
-    for pf in port_forwards {
-        command.arg("-l")
-               .arg(format!("{}:{}",pf.remote, pf.remote_port));
+    for pf in &port_forwards {
+        sshuttle_args.push("-l".to_string());
+        let port_str = format!("{}:{}", pf.remote, pf.remote_port);
+        sshuttle_args.push(port_str); // Now this works because everything is String
     }
-
-    command.arg("-v");
-
-    // Unsafe block around the environment variable manipulation
-    unsafe {
-        std::env::set_var("SUDO_ASKPASS", "/usr/bin/ssh-askpass");
-    }
-    command.env("SUDO_ASKPASS", "/usr/bin/ssh-askpass");
     
-    match command.spawn() {
-        Ok(child) => {
-            // Store child process in state
-            let mut state_guard = state.0.lock().unwrap();
-            *state_guard = Some(child);
-            Ok("Connection established successfully".into())
-        },
-        Err(e) => Err(format!("Failed to start sshuttle: {}", e))
+    sshuttle_args.push("-v".to_string());
+    
+    // Join all arguments into a single string for osascript
+    let args_str = sshuttle_args.join(" ");
+    
+    // Use osascript to show a graphical sudo prompt
+    #[cfg(target_os = "macos")]
+    {
+        // Create AppleScript that runs sudo with sshuttle
+        let script = format!(
+            "do shell script \"sshuttle {}\" with administrator privileges", 
+            args_str
+        );
+        
+        // Run the AppleScript - FIX: Convert io::Error to String
+        let output = Command::new("osascript")
+            .args(["-e", &script])
+            .spawn()
+            .map_err(|e| e.to_string())?;  // Add map_err to convert the error
+            
+        // Store process in state for later termination
+        let mut state_guard = state.0.lock().unwrap();
+        *state_guard = Some(output);
+        
+        return Ok("Connection established with elevated privileges".into());
+    }
+    
+    // Linux-specific implementation using pkexec
+    #[cfg(target_os = "linux")]
+    {
+        // Check if pkexec is available
+        if Command::new("which").arg("pkexec").output().is_ok() {
+            // Create command using pkexec
+            let mut command = Command::new("pkexec");
+            command.arg("sshuttle")
+                   .args(sshuttle_args);
+                   
+            // Linux-specific implementation
+            match command.spawn() {
+                Ok(child) => {
+                    let mut state_guard = state.0.lock().unwrap();
+                    *state_guard = Some(child);
+                    Ok("Connection established with elevated privileges".into())
+                },
+                Err(e) => Err(format!("Failed to start sshuttle: {}", e))
+            }
+        } else {
+            Err("pkexec not found. Please install policykit-1".into())
+        }
+    }
+    
+    // Windows implementations would go here
+    #[cfg(not(any(target_os = "macos", target_os = "linux")))]
+    {
+        Err("Elevated privileges required. This feature is currently only supported on macOS and Linux.".into())
     }
 }
 
