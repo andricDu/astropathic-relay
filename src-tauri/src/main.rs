@@ -3,10 +3,15 @@
 
 use std::sync::Mutex;
 use std::process::Command;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use std::fs::File;
+use std::io::{Read, Write};
+use std::path::PathBuf;
+use std::collections::HashMap;
+use dirs;
 
 // Define the structure for port forwards
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 struct ListenPortForward {
     remote: String,
     #[serde(rename = "remotePort")]
@@ -29,26 +34,6 @@ async fn run_sshuttle(
     dns: bool,
     port_forwards: Vec<ListenPortForward>
 ) -> Result<String, String> {
-    // Add the DNS flag to the command if enabled
-    let dns_flag = if dns { "--dns" } else { "" };
-    
-    // Format port forward options for SSH
-    let port_forward_args = port_forwards.iter()
-        .map(|pf| format!("-l {}:{}", pf.remote, pf.remote_port))
-        .collect::<Vec<String>>()
-        .join(" ");
-    
-    // Using the standard Rust process API
-    let cmd_str = format!("sshuttle -r {} {} {} {}", 
-        host, 
-        subnets, 
-        dns_flag,
-        port_forward_args
-    );
-    
-    // For debugging - just show the command
-    //Ok(format!("Execute: {}", cmd_str));
-    
 
     let mut command = Command::new("sshuttle");
     command.arg("-r").arg(host).arg(subnets);
@@ -75,12 +60,111 @@ async fn run_sshuttle(
     }
 }
 
+// Create a struct for saved connection profiles
+#[derive(Serialize, Deserialize, Clone)]
+struct ConnectionProfile {
+    name: String,
+    host: String,
+    subnets: String,
+    enable_dns: bool,
+    port_forwards: Vec<ListenPortForward>,
+}
+
+// Get the path to the config file
+fn get_config_path() -> Result<PathBuf, String> {
+    let home = dirs::home_dir().ok_or("Could not determine home directory")?;
+    Ok(home.join(".sshuttle-launcher.json"))
+}
+
+// Load saved connection profiles
+#[tauri::command]
+fn load_connections() -> Result<HashMap<String, ConnectionProfile>, String> {
+    let config_path = get_config_path()?;
+    
+    if !config_path.exists() {
+        return Ok(HashMap::new());
+    }
+    
+    let mut file = File::open(config_path)
+        .map_err(|e| format!("Failed to open config file: {}", e))?;
+    
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)
+        .map_err(|e| format!("Failed to read config file: {}", e))?;
+    
+    let profiles: HashMap<String, ConnectionProfile> = serde_json::from_str(&contents)
+        .map_err(|e| format!("Failed to parse config file: {}", e))?;
+    
+    Ok(profiles)
+}
+
+// Save a new connection profile
+#[tauri::command]
+fn save_connection(
+    name: String, 
+    host: String, 
+    subnets: String, 
+    enable_dns: bool, 
+    port_forwards: Vec<ListenPortForward>
+) -> Result<(), String> {
+    let mut profiles = load_connections()?;
+    
+    let profile = ConnectionProfile {
+        name: name.clone(),
+        host,
+        subnets,
+        enable_dns,
+        port_forwards,
+    };
+    
+    profiles.insert(name, profile);
+    
+    let config_path = get_config_path()?;
+    let json = serde_json::to_string_pretty(&profiles)
+        .map_err(|e| format!("Failed to serialize profiles: {}", e))?;
+    
+    let mut file = File::create(config_path)
+        .map_err(|e| format!("Failed to create config file: {}", e))?;
+    
+    file.write_all(json.as_bytes())
+        .map_err(|e| format!("Failed to write config file: {}", e))?;
+    
+    Ok(())
+}
+
+// Delete a saved connection profile
+#[tauri::command]
+fn delete_connection(name: String) -> Result<(), String> {
+    let mut profiles = load_connections()?;
+    
+    profiles.remove(&name);
+    
+    let config_path = get_config_path()?;
+    let json = serde_json::to_string_pretty(&profiles)
+        .map_err(|e| format!("Failed to serialize profiles: {}", e))?;
+    
+    let mut file = File::create(config_path)
+        .map_err(|e| format!("Failed to create config file: {}", e))?;
+    
+    file.write_all(json.as_bytes())
+        .map_err(|e| format!("Failed to write config file: {}", e))?;
+    
+    Ok(())
+}
+
+// Update main function to register the new commands
 fn main() {
     tauri::Builder::default()
         .manage(ProcessState(Mutex::new(None)))
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_process::init())
-        .invoke_handler(tauri::generate_handler![greet, run_sshuttle])
+        .invoke_handler(tauri::generate_handler![
+            greet, 
+            run_sshuttle, 
+            load_connections, 
+            save_connection, 
+            delete_connection
+        ])
         .run(tauri::generate_context!("tauri.conf.json"))
         .expect("error while running tauri application");
 }

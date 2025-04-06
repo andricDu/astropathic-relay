@@ -24,7 +24,6 @@ body {
 
 #root {
   width: 100%;
-  height: 100vh;
   display: flex;
   padding: 0;
   box-sizing
@@ -85,7 +84,6 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-height: 90vh; 
   box-sizing: border-box;
 }
 
@@ -217,7 +215,7 @@ body {
   margin: 20px 0;
   text-align: left;
   flex: 1; /* This makes it take all remaining space */
-  min-height: 50px; /* Minimum height */
+  min-height: 250px; /* Minimum height */
   overflow-y: auto;
   /* Add scroll behavior for smoother scrolling */
   scroll-behavior: smooth;
@@ -417,4 +415,158 @@ input {
   margin: 10px 0;
   color: #33ff00;
   text-shadow: 0 0 5px #33ff00;
+}
+
+/* Saved Connections Section */
+.saved-connections-section {
+  margin: 0 0 20px 0;
+  padding: 15px;
+  border: 1px solid #33ff00;
+  background-color: #181818;
+}
+
+.saved-connections-section h3 {
+  font-family: var(--font-gothic);
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+  text-align: left;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #33ff00;
+}
+
+.saved-connections-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.connection-select {
+  flex: 1;
+  background: #111;
+  border: 1px solid #33ff00;
+  color: #33ff00;
+  padding: 8px;
+  font-family: var(--font-display);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2333ff00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 28px;
+}
+
+.connection-select:focus {
+  outline: none;
+  box-shadow: 0 0 5px #33ff00;
+}
+
+.connection-select option {
+  background-color: #111;
+  color: #33ff00;
+}
+
+/* Modal for saving connections */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #161616;
+  border: 2px solid #33ff00;
+  padding: 20px;
+  min-width: 300px;
+  max-width: 500px;
+  box-shadow: 0 0 15px #33ff00;
+  position: relative;
+}
+
+.modal-content::before,
+.modal-content::after {
+  content: "⚙";
+  position: absolute;
+  color: #33ff00;
+  font-size: 16px;
+}
+
+.modal-content::before {
+  top: 5px;
+  left: 5px;
+}
+
+.modal-content::after {
+  bottom: 5px;
+  right: 5px;
+  transform: rotate(45deg);
+}
+
+.modal-content h3 {
+  font-family: var(--font-gothic);
+  margin-top: 0;
+  text-align: center;
+  color: #33ff00;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1.3em;
+  margin-bottom: 20px;
+  text-shadow: 0 0 5px #33ff00;
+}
+
+.modal-content p {
+  margin-bottom: 15px;
+  color: #33ff00;
+  font-family: var(--font-display);
+  font-size: 0.9em;
+}
+
+.modal-input {
+  width: 100%;
+  background: #111;
+  border: 1px solid #33ff00;
+  color: #33ff00;
+  padding: 10px;
+  font-family: var(--font-display);
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.retro-button.save-btn {
+  background-color: #113311;
+  border-color: #33ff00;
+}
+
+.retro-button.delete-btn, 
+.retro-button.purge-btn {
+  background-color: #331111;
+  border-color: #ff3300;
+  color: #ff3300;
+}
+
+.retro-button.delete-btn:hover,
+.retro-button.purge-btn:hover {
+  background-color: #ff3300;
+  color: #111;
+}
+
+.retro-button.cancel-btn {
+  background-color: #222;
+}
 }

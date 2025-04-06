@@ -8,10 +8,20 @@ function App() {
   const [status, setStatus] = useState("disconnected");
   const [output, setOutput] = useState("Ready to connect...");
   const [enableDns, setEnableDns] = useState(false);
-  // Add state for port forwards
   const [portForwards, setPortForwards] = useState([]);
   const [newPortForward, setNewPortForward] = useState({ remote: "", remotePort: "" });
   const consoleRef = useRef(null);
+  
+  // New state for saved connections
+  const [savedConnections, setSavedConnections] = useState({});
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [newConnectionName, setNewConnectionName] = useState("");
+  const [selectedConnection, setSelectedConnection] = useState("");
+
+  // Load saved connections on initial render
+  useEffect(() => {
+    loadSavedConnections();
+  }, []);
 
   // Auto-scroll effect when output changes
   useEffect(() => {
@@ -19,6 +29,64 @@ function App() {
       consoleRef.current.scrollTop = consoleRef.current.scrollHeight;
     }
   }, [output]);
+
+  // Load saved connections from the config file
+  const loadSavedConnections = async () => {
+    try {
+      const connections = await invoke("load_connections");
+      setSavedConnections(connections);
+      setOutput(">> Data-archive accessed. Connection profiles loaded.");
+    } catch (error) {
+      setOutput(`>> Error accessing archives: ${error}`);
+    }
+  };
+
+  // Save the current connection
+  const saveConnection = async () => {
+    try {
+      await invoke("save_connection", {
+        name: newConnectionName,
+        host,
+        subnets,
+        enableDns,
+        portForwards
+      });
+      
+      setShowSaveModal(false);
+      setNewConnectionName("");
+      await loadSavedConnections();
+      setOutput(prev => prev + "\n>> Connection profile saved to the holy archives.");
+    } catch (error) {
+      setOutput(`>> Error saving connection: ${error}`);
+    }
+  };
+
+  // Delete a saved connection
+  const deleteConnection = async (name) => {
+    try {
+      await invoke("delete_connection", { name });
+      await loadSavedConnections();
+      setOutput(prev => prev + `\n>> Profile "${name}" purged from the archives.`);
+      if (selectedConnection === name) {
+        setSelectedConnection("");
+      }
+    } catch (error) {
+      setOutput(`>> Error deleting connection: ${error}`);
+    }
+  };
+
+  // Load a saved connection
+  const loadConnection = (name) => {
+    const connection = savedConnections[name];
+    if (connection) {
+      setHost(connection.host);
+      setSubnets(connection.subnets);
+      setEnableDns(connection.enable_dns);
+      setPortForwards(connection.port_forwards || []);
+      setSelectedConnection(name);
+      setOutput(`>> Profile "${name}" loaded from the archives. The machine spirit awaits your command.`);
+    }
+  };
 
   // Omnissiah ritual message with ASCII art
   const omnissiahPraise = `
@@ -99,11 +167,42 @@ function App() {
   }
 
   // Determine if the retro theme should have the connected class for the glow effect
-  const retroThemeClass = `container retro-theme retro-theme-size ${status === "connected" ? "connected" : ""}`;
+  const retroThemeClass = `container retro-theme ${status === "connected" ? "connected" : ""}`;
 
   return (
     <main className={retroThemeClass}>
       <h1>Astropathic Relay</h1>
+      
+      {/* Saved Connections Section */}
+      <div className="saved-connections-section">
+        <h3>Data Archives</h3>
+        <div className="saved-connections-controls">
+          <select 
+            value={selectedConnection}
+            onChange={(e) => loadConnection(e.target.value)}
+            className="connection-select"
+          >
+            <option value="">-- Select Profile --</option>
+            {Object.keys(savedConnections).map(name => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
+          <button 
+            className="retro-button save-btn"
+            onClick={() => setShowSaveModal(true)}
+          >
+            Save
+          </button>
+          {selectedConnection && (
+            <button 
+              className="retro-button delete-btn"
+              onClick={() => deleteConnection(selectedConnection)}
+            >
+              Purge
+            </button>
+          )}
+        </div>
+      </div>
       
       <div className="form-container">
         <div className="input-group">
@@ -136,7 +235,7 @@ function App() {
           <label htmlFor="dns-checkbox">Enable DNS forwarding</label>
         </div>
         
-        {/* New Port Forwarding Section */}
+        {/* Port Forwarding Section */}
         <div className="port-forward-section">
           <h3>Port Forwards</h3>
           <div className="port-forward-form">
@@ -198,6 +297,41 @@ function App() {
       <div className="console-output" ref={consoleRef}>
         <pre>{output}</pre>
       </div>
+      
+      {/* Save Connection Modal */}
+      {showSaveModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Archive Connection Profile</h3>
+            <p>Enter a designation for this connection profile:</p>
+            <input 
+              type="text"
+              value={newConnectionName}
+              onChange={(e) => setNewConnectionName(e.target.value)}
+              placeholder="Profile name"
+              className="modal-input"
+            />
+            <div className="modal-buttons">
+              <button 
+                className="retro-button cancel-btn"
+                onClick={() => {
+                  setShowSaveModal(false);
+                  setNewConnectionName("");
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                className="retro-button save-btn"
+                onClick={saveConnection}
+                disabled={!newConnectionName}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

@@ -14,6 +14,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tauri-plugin-shell = "2.0.0"
 tauri-plugin-process = "2.0.0"
+dirs = "5.0.1"  # Library for finding system directories
 
 [features]
 # By default, enable custom protocol support
