@@ -1,0 +1,100 @@
+name: Build Universal Binary and Tag Release
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+  TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+  TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+
+jobs:
+  build-and-tag:
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+          
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+          
+      - name: Install dependencies
+        run: |
+          yarn install
+          rustup target add aarch64-apple-darwin x86_64-apple-darwin
+          
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli
+            
+      - name: Generate version number
+        id: generate_version
+        run: |
+          # Get commit count for versioning
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          VERSION="1.0.${COMMIT_COUNT}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "TAG_NAME=v$VERSION" >> $GITHUB_ENV
+          echo "Generated version: $VERSION (tag: v$VERSION)"
+            
+      - name: Build Universal Binary
+        run: |
+          # Build for Apple Silicon (ARM)
+          yarn tauri build --target aarch64-apple-darwin
+          
+          # Build for Intel (x86_64)
+          yarn tauri build --target x86_64-apple-darwin
+          
+          # Create directories for universal binary
+          mkdir -p universal/Astropathic\ Relay.app/Contents/MacOS
+          mkdir -p universal/Astropathic\ Relay.app/Contents/Resources
+          
+          # Copy Intel binary structure (most files are shared)
+          cp -r src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Astropathic\ Relay.app/* universal/Astropathic\ Relay.app/
+          
+          # Create universal binary
+          lipo -create \
+            src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Astropathic\ Relay.app/Contents/MacOS/Astropathic\ Relay \
+            src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Astropathic\ Relay.app/Contents/MacOS/Astropathic\ Relay \
+            -output universal/Astropathic\ Relay.app/Contents/MacOS/Astropathic\ Relay
+            
+          # Create dmg for distribution
+          hdiutil create -volname "Astropathic Relay" -srcfolder universal -ov -format UDZO "Astropathic-Relay-${{ env.VERSION }}-universal.dmg"
+      
+      - name: Create Git tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a ${{ env.TAG_NAME }} -m "Release ${{ env.VERSION }}"
+          git push origin ${{ env.TAG_NAME }}
+            
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Astropathic Relay ${{ env.VERSION }}
+          tag_name: ${{ env.TAG_NAME }}
+          files: |
+            Astropathic-Relay-${{ env.VERSION }}-universal.dmg
+          body: |
+            # Astropathic Relay ${{ env.VERSION }}
+            
+            By the grace of the Omnissiah, a new build of the Astropathic Relay has manifested from the digital forge.
+            
+            ## Binary Canticles
+            - Universal binary for Intel and Apple Silicon
+            - Built from commit ${{ github.sha }}
+            
+            Praise be to the Machine God!

@@ -6,6 +6,10 @@
 
 ![screenshot](./docs/app_full.png)
 
+![Omnissiah Approved](https://img.shields.io/badge/Omnissiah-Approved-red?style=for-the-badge)
+![Tech Heresy](https://img.shields.io/badge/Tech%20Heresy-0%25-success?style=for-the-badge)
+![Machine Spirit](https://img.shields.io/badge/Machine%20Spirit-Appeased-blueviolet?style=for-the-badge)
+
 ## Technical Specifications as Decreed by the Adeptus Mechanicus
 
 The Astropathic-Relay cogitator application is a blessed instrument for establishing secured data-conduits through the sshuttle machine spirit. This holy device enables the faithful to traverse hostile network domains while shielded from the corrupting influence of scrap-code and data-predators.
