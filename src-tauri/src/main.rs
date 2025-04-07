@@ -88,9 +88,9 @@ fn run_sshuttle(
     let args_str = sshuttle_args.join(" ")
         .replace("\"", "\\\"");  // Escape quotes for shell
 
-    // Create AppleScript that redirects to file
+    // Create AppleScript that redirects to file with explicit PATH
     let script = format!(
-        "do shell script \"sshuttle {} > '{}' 2>&1 & echo $!\" with administrator privileges", 
+        "do shell script \"PATH=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin sshuttle {} > '{}' 2>&1 & echo $!\" with administrator privileges", 
         args_str, output_path
     );
     

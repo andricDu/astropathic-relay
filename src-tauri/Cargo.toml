@@ -1,6 +1,6 @@
 [package]
 name = "astropathic-relay"
-version = "1.0.0"
+version = "1.0.1"
 description = "Praise the Omnissiah! A Tauri application for the Astropathic Relay."
 authors = ["Dusan Andric"]
 edition = "2024"
