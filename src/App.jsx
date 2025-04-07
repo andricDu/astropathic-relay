@@ -19,6 +19,9 @@ function App() {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [newConnectionName, setNewConnectionName] = useState("");
   const [selectedConnection, setSelectedConnection] = useState("");
+  
+  // Add state for SSH key path
+  const [sshKeyPath, setSshKeyPath] = useState("");
 
   // Load saved connections on initial render
   useEffect(() => {
@@ -51,6 +54,7 @@ function App() {
         host,
         subnets,
         enableDns,
+        sshKeyPath: sshKeyPath.trim() === "" ? null : sshKeyPath,
         portForwards
       });
       
@@ -85,6 +89,7 @@ function App() {
       setSubnets(connection.subnets);
       setEnableDns(connection.enable_dns);
       setPortForwards(connection.port_forwards || []);
+      setSshKeyPath(connection.ssh_key_path || "");
       setSelectedConnection(name);
       setOutput(`>> Profile "${name}" loaded from the archives. The machine spirit awaits your command.`);
     }
@@ -229,11 +234,13 @@ function App() {
         setOutput(prev => prev + portForwardStr);
       }
       
+      console.log(sshKeyPath);
       // Pass the DNS flag and port forwards to the Rust function
       const result = await invoke("run_sshuttle", { 
         host, 
         subnets,
         dns: enableDns,
+        sshKeyPath: sshKeyPath || null,  // Pass key path
         portForwards: portForwards
       });
       
@@ -396,6 +403,17 @@ function App() {
               <label htmlFor="dns-checkbox">Enable DNS forwarding</label>
             </div>
             
+            {/* Add SSH Key Path input */}
+            <div className="input-group">
+              <label>SSH Key Path:</label>
+              <input 
+                type="text" 
+                placeholder="/Users/username/.ssh/id_rsa"
+                value={sshKeyPath}
+                onChange={(e) => setSshKeyPath(e.target.value)}
+              />
+            </div>
+
             {/* Port Forwarding Section */}
             <div className="port-forward-section">
               <h3>Port Forwards</h3>

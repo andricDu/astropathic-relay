@@ -42,6 +42,7 @@ fn run_sshuttle(
     host: String, 
     subnets: String, 
     dns: bool,
+    ssh_key_path: Option<String>,  // Add this parameter
     port_forwards: Vec<ListenPortForward>
 ) -> Result<String, String> {
     // Create output file path
@@ -63,9 +64,30 @@ fn run_sshuttle(
         sshuttle_args.push(port_str);
     }
     
-    sshuttle_args.push("-v".to_string());
-    let args_str = sshuttle_args.join(" ");
+    // Add SSH key option if provided
+    if let Some(key_path) = &ssh_key_path {
+        // Add --ssh-cmd option with key path
+        // Escape quotes properly for the shell
+        sshuttle_args.push(format!("--ssh-cmd \"ssh -i {}\"", key_path));
+    }
     
+    sshuttle_args.push("-v".to_string());
+    
+    // Create full command string for display (for user output)
+    let display_args_str = sshuttle_args.join(" ");
+    let full_command = format!("sshuttle {}", display_args_str);
+
+    // Add command to output buffer so user can see what's being executed
+    let output_buffer = app_handle.state::<OutputBuffer>();
+    let mut buffer = output_buffer.0.lock().unwrap();
+    buffer.push("Executing command:".to_string());
+    buffer.push(full_command.clone());
+    buffer.push(format!("SSH key path: {:?}", ssh_key_path));
+
+    // Create a properly escaped version for the actual execution
+    let args_str = sshuttle_args.join(" ")
+        .replace("\"", "\\\"");  // Escape quotes for shell
+
     // Create AppleScript that redirects to file
     let script = format!(
         "do shell script \"sshuttle {} > '{}' 2>&1 & echo $!\" with administrator privileges", 
@@ -73,7 +95,7 @@ fn run_sshuttle(
     );
     
     // Execute AppleScript to start sshuttle
-    let output = Command::new("osascript")
+    let output: std::process::Output = Command::new("osascript")
         .args(["-e", &script])
         .output()
         .map_err(|e| e.to_string())?;
@@ -200,6 +222,7 @@ struct ConnectionProfile {
     host: String,
     subnets: String,
     enable_dns: bool,
+    ssh_key_path: Option<String>,
     port_forwards: Vec<ListenPortForward>,
 }
 
@@ -237,7 +260,8 @@ fn save_connection(
     name: String, 
     host: String, 
     subnets: String, 
-    enable_dns: bool, 
+    enable_dns: bool,
+    ssh_key_path: Option<String>,  // Add this parameter
     port_forwards: Vec<ListenPortForward>
 ) -> Result<(), String> {
     let mut profiles = load_connections()?;
@@ -247,6 +271,7 @@ fn save_connection(
         host,
         subnets,
         enable_dns,
+        ssh_key_path,  // Store key path
         port_forwards,
     };
     

@@ -230,8 +230,9 @@ body {
   scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
-  height: auto;
-  min-height: 500px;
+  height: 500px; /* or whatever fixed height you want */
+  max-height: 70vh; /* optional: responsive height */
+  overflow-x: hidden; /* prevents horizontal scrolling */
   margin: 0; /* Remove margins since it's in its own column */
 }
 
@@ -245,6 +246,24 @@ body {
   /* Improve line height for better readability */
   line-height: 1.4;
   flex: 1.5;
+}
+
+/* Style the scrollbar (optional) */
+.console-output::-webkit-scrollbar {
+  width: 8px;
+}
+
+.console-output::-webkit-scrollbar-track {
+  background: #111;
+}
+
+.console-output::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+.console-output::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* Add these CSS rules to differentiate output types */
