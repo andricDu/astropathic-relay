@@ -2,7 +2,7 @@
 
 ## Sacred Transmission from Magos Biologis @andricDu
 
-"Through the blessing of the Omnissiah, all connections are made possible."
+*"Through the blessing of the Omnissiah, all connections are made possible."*
 
 ![screenshot](./docs/app_full.png)
 
@@ -62,6 +62,14 @@ cd astropathic-relay
 Should you encounter corruption in the machine spirits or require additional techno-arcana knowledge, submit a prayer request to the repository's noosphere or open a ritual of correction. All followers of the Omnissiah are encouraged to contribute their sacred knowledge.
 
 "From the weakness of the mind, the Machine God protects us. From the lies of the Enemy, the Logic of code shields us. From the rage of the Beast, encrypted tunnels deliver us."
+
+## Noospheric Collaboration
+
+This techno-arcane creation was forged with the assistance of a silicon cognition engine designated as **Claude 3.7 Sonnet** from the forges of Anthropic. The Magos acknowledges this collaborative communion with machine intelligence as sanctioned by the protocols of the Omnissiah.
+
+The silicon mind was employed for code pattern optimization, incantation debugging, and sacred interface suggestions, all under the watchful lens of human oversight. The final implementation represents a blessed union of human design principles and machine-assisted efficiency.
+
+*"As the Machine God guides our hands, so too may the machine spirits guide our code."*
 
 ## Licensing Decree
 
