@@ -4,7 +4,7 @@
 
 "Through the blessing of the Omnissiah, all connections are made possible."
 
-![screenshot](./docs/app.png)
+![screenshot](./docs/app_full.png)
 
 ## Technical Specifications as Decreed by the Adeptus Mechanicus
 
