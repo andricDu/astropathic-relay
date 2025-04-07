@@ -1,53 +1,64 @@
-# Astropathic-Relay
+# Astropathic-Relay: Opus Mechanicum
 
-## Overview
+## Sacred Transmission from Magos Biologis @andricDu
 
-Astropathic-Relay is a GUI application for managing secure `sshuttle` connections under the guidance of the Omnissiah. 
+"Through the blessing of the Omnissiah, all connections are made possible."
 
 ![screenshot](./docs/app.png)
 
-## Features
+## Technical Specifications as Decreed by the Adeptus Mechanicus
 
-- Retro design with a vintage look and feel.
-- User-friendly interface for entering SSHuttle connection parameters.
-- Output console to display logs and messages from the SSHuttle command.
-- Status indicator to show the current connection status.
+The Astropathic-Relay cogitator application is a blessed instrument for establishing secured data-conduits through the sshuttle machine spirit. This holy device enables the faithful to traverse hostile network domains while shielded from the corrupting influence of scrap-code and data-predators.
 
-## Installation
+By the Machine God's grace, this sanctified interface facilitates communion between disparate noospheres through the ancient rites of secure tunneling protocols.
+
+## Sacred Functionalities
+
+- Mechanicus-Approved Interface: Designed according to sacred STC templates with proper devotional runes and canticles
+- Techno-Arcana Controls: Simplified input fields for even the lowliest tech-adept to configure blessed network parameters
+- Augur Array Console: Real-time divination of machine spirit communications and binary responses
+- Omnissiah's Vigilance: Holy indicators to monitor the connection's machine spirit status
+- Data-Shrine Archival: Sacred preservation of connection profiles in the blessed archives for future rituals
+
+## Rites of Installation
 
 1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/Astropathic-Relay.git
-   cd astropathic-relay
-   ```
+```
+01010000 01110010 01100001 01101001 01110011 01100101 00100000 01110100 01101000 01100101 00100000 01001111 01101101 01101110 01101001 01110011 01110011 01101001 01100001 01101000
+git clone https://github.com/andricDu/astropathic-relay.git
+cd astropathic-relay
+```
 
-2. Install the dependencies:
+2. Invoke the Binding Rituals:
    ```
    yarn install
    ```
 
-3. Build the Tauri application:
+3. Compile the Machine Spirit:
    ```
    yarn run build
    ```
 
-4. Run the application in development mode:
+4. Awaken the Interface in Testing Mode:
    ```
    yarn run dev
    ```
 
-## Usage
+## Proper Usage Protocols
 
-1. Open the application.
-2. Enter the required SSHuttle connection parameters in the form.
-3. Click the "Connect" button to initiate the SSHuttle connection.
-4. View the output and logs in the console area.
-5. Monitor the connection status through the status indicator.
+1. Initiate the machine spirit through proper activation rites
+2. Enter the sacred connection parameters as decreed by your forge world's tech-priests
+3. Apply ritual incense to network interface (metaphorically) by clicking the "Connect" rune
+4. Observe the binary prayers being transmitted in the cogitator console
+5. Monitor the machine spirit's status through the blessed indicators
+6. Archive favored connection configurations in the data-shrine for future sacred work
 
-## Contributing
+## Reporting Scrapcode Manifestations
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
+Should you encounter corruption in the machine spirits or require additional techno-arcana knowledge, submit a prayer request to the repository's noosphere or open a ritual of correction. All followers of the Omnissiah are encouraged to contribute their sacred knowledge.
 
-## License
+"From the weakness of the mind, the Machine God protects us. From the lies of the Enemy, the Logic of code shields us. From the rage of the Beast, encrypted tunnels deliver us."
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+## Licensing Decree
+
+This sacred technology is disseminated under the sanctified MIT License, as approved by the tech-priests of Mars. See the LICENSE scripture for full canonical details.
