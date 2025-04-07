@@ -27,11 +27,11 @@ By the Machine God's grace, this sanctified interface facilitates communion betw
 ## Rites of Installation
 
 1. Clone the repository:
-```
-01010000 01110010 01100001 01101001 01110011 01100101 00100000 01110100 01101000 01100101 00100000 01001111 01101101 01101110 01101001 01110011 01110011 01101001 01100001 01101000
-git clone https://github.com/andricDu/astropathic-relay.git
-cd astropathic-relay
-```
+   ```
+   01010000 01110010 01100001 01101001 01110011 01100101 00100000 01110100 01101000 01100101 00100000 01001111 01101101 01101110 01101001 01110011 01110011 01101001 01100001 01101000
+   git clone https://github.com/andricDu/astropathic-relay.git
+   cd astropathic-relay
+   ```
 
 2. Invoke the Binding Rituals:
    ```
