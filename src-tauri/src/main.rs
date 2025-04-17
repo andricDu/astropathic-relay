@@ -178,20 +178,34 @@ fn stop_sshuttle(state: State<'_, ProcessState>) -> Result<String, String> {
     let mut state_guard = state.0.lock().unwrap();
     
     if let Some(fake_child) = state_guard.take() {
-        // Run pkill using the stored PID
-        let kill_result = Command::new("pkill")
-            .args(["-P", &fake_child.pid])
+        // 1. Kill the shell process that launched sshuttle
+        let _ = Command::new("kill")
+            .arg("-9")
+            .arg(&fake_child.pid)
             .status();
             
-        if kill_result.is_ok() {
-            // Also run pkill on any sshuttle processes
-            let _ = Command::new("pkill")
-                .args(["-f", "sshuttle"])
-                .status();
+        // 2. Kill all sshuttle processes and their children
+        let kill_result = Command::new("pkill")
+            .args(["-9", "-f", "sshuttle"])
+            .status();
             
+        // 3. Additional cleanup - kill any remaining python processes that might be sshuttle
+        let _ = Command::new("pkill")
+            .args(["-9", "-f", "python.*sshuttle"])
+            .status();
+            
+        // Verify sshuttle is actually terminated
+        let check = Command::new("pgrep")
+            .arg("-f")
+            .arg("sshuttle")
+            .status()
+            .map(|s| !s.success())
+            .unwrap_or(true);
+            
+        if check {
             Ok("Connection terminated successfully".into())
         } else {
-            Err("Failed to terminate connection".into())
+            Err("Some sshuttle processes might still be running".into())
         }
     } else {
         Ok("No active connection to terminate".into())
@@ -320,20 +334,15 @@ fn get_sshuttle_output(state: State<'_, OutputBuffer>) -> Vec<String> {
 
 fn main() {
     tauri::Builder::default()
-        .manage(ProcessState(Mutex::new(None)))
-        .manage(OutputBuffer(Mutex::new(Vec::new())))
-        .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_process::init())
         .invoke_handler(tauri::generate_handler![
-            greet, 
-            run_sshuttle, 
-            stop_sshuttle, 
+            cmd::start_sshuttle,
+            cmd::stop_sshuttle,
             check_sshuttle_running,
             load_connections, 
             save_connection, 
             delete_connection,
             get_sshuttle_output
         ])
-        .run(tauri::generate_context!("tauri.conf.json"))
+        .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
